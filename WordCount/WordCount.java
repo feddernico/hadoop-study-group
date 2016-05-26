@@ -40,8 +40,6 @@ public class WordCount extends Configured implements Tool {
 
   public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
     private final static IntWritable one = new IntWritable(1);
-    private Text word = new Text();
-    private long numRecords = 0;    
     private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s*");//words boundaries are space tabs and punctuation
 
     public void map(LongWritable offset, Text lineText, Context context)

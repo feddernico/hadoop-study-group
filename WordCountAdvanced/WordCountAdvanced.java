@@ -58,10 +58,7 @@ public class WordCountAdvanced extends Configured implements Tool {
 
   public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
     private final static IntWritable one = new IntWritable(1);
-    private Text word = new Text();
     private boolean caseSensitive = false;
-    private long numRecords = 0;
-    private String input;
     private Set<String> patternsToSkip = new HashSet<String>();
     private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s*");
 
@@ -69,9 +66,9 @@ public class WordCountAdvanced extends Configured implements Tool {
         throws IOException,
         InterruptedException {
       if (context.getInputSplit() instanceof FileSplit) {
-        this.input = ((FileSplit) context.getInputSplit()).getPath().toString();
+        ((FileSplit) context.getInputSplit()).getPath().toString();
       } else {
-        this.input = context.getInputSplit().toString();
+        context.getInputSplit().toString();
       }
       Configuration config = context.getConfiguration();
       this.caseSensitive = config.getBoolean("wordcount.case.sensitive", false);
@@ -89,6 +86,7 @@ public class WordCountAdvanced extends Configured implements Tool {
         while ((pattern = fis.readLine()) != null) {
           patternsToSkip.add(pattern);
         }
+        fis.close();
       } catch (IOException ioe) {
         System.err.println("Caught exception while parsing the cached file '"
             + patternsURI + "' : " + StringUtils.stringifyException(ioe));
