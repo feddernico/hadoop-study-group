@@ -16,12 +16,12 @@ You will need all the jars contained into the common folder (3 files), all the j
 
 To use the jar once exported, this is a sample 
 
-1) copy stop file to hdfs 
-2) hadoop jar <path jar>/<Jar name> <ClassName> /input/path  output/path
+1. copy stop file to hdfs 
+2. hadoop jar <path jar>/<Jar name> <ClassName> /input/path  output/path
 
 ## WordCountAdvanced
 
 ### Usage
 
-1) copy stop file to hdfs 
-2) hadoop jar <path jar>/<Jar name> <ClassName> /input/path  output/path
+1. copy stop file to hdfs 
+2. hadoop jar <path jar>/<Jar name> <ClassName> /input/path  output/path
