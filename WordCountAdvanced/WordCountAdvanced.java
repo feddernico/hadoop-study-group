@@ -56,7 +56,7 @@ public class WordCountAdvanced extends Configured implements Tool {
     return job.waitForCompletion(true) ? 0 : 1;
   }
 
-
+//MAPPER
   public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
     private final static IntWritable one = new IntWritable(1);
     private boolean caseSensitive = false;
