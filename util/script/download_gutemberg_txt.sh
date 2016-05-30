@@ -55,12 +55,12 @@ if [ ! -f "${ZIP_LIST}" ] ; then
  
   # Process the downloaded HTML link lists into a single sorted file of zipfile
   # URLs, one per line.
-  grep -oh 'http://[a-zA-Z0-9./]*.zip' "${DIR}/www.gutenberg.org/robot/harvest*" | \
+  grep -oh 'http://[a-zA-Z0-9./]*.zip' $DIR/www.gutenberg.org/robot/harvest* | \
     sort | \
     uniq > "${ZIP_LIST}"
  
   # Get rid of the downloaded harvest files now that we have what we want.
-  rm -Rf "${DIR}/www.gutenberg.org"
+  # rm -Rf "${DIR}/www.gutenberg.org"
 else
   echo "${ZIP_LIST} already exists. Skipping harvest."
 fi
