@@ -60,7 +60,7 @@ if [ ! -f "${ZIP_LIST}" ] ; then
     uniq > "${ZIP_LIST}"
  
   # Get rid of the downloaded harvest files now that we have what we want.
-  # rm -Rf "${DIR}/www.gutenberg.org"
+  rm -Rf "${DIR}/www.gutenberg.org"
 else
   echo "${ZIP_LIST} already exists. Skipping harvest."
 fi
