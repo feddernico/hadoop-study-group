@@ -1,28 +1,30 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
-import java.io.IOException;
+import java.util.Vector;
 import java.util.regex.Pattern;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
-import org.apache.hadoop.util.Tool;
-import org.apache.hadoop.util.ToolRunner;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.FileSplit;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.StringUtils;
-
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
+
 
 public class WordCountAdvanced extends Configured implements Tool {
 
@@ -62,6 +64,7 @@ public class WordCountAdvanced extends Configured implements Tool {
     private boolean caseSensitive = false;
     private Set<String> patternsToSkip = new HashSet<String>();
     private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s*");
+    private Vector<Text> titles;
 
     protected void setup(Mapper.Context context)
         throws IOException,
@@ -77,6 +80,7 @@ public class WordCountAdvanced extends Configured implements Tool {
         URI[] localPaths = context.getCacheFiles();
         parseSkipFile(localPaths[0]);
       }
+      titles = new Vector<Text>();
     }
 
     private void parseSkipFile(URI patternsURI) {
@@ -94,22 +98,41 @@ public class WordCountAdvanced extends Configured implements Tool {
       }
     }
 
-    public void map(LongWritable offset, Text lineText, Context context)
-        throws IOException, InterruptedException {
-      String line = lineText.toString();
-      if (!caseSensitive) {
-        line = line.toLowerCase();
-      }
-      Text currentWord = new Text();
-      for (String word : WORD_BOUNDARY.split(line)) {
-        if (word.isEmpty() || patternsToSkip.contains(word)) {
-            continue;
-        }
-            currentWord = new Text(word);
-            context.write(currentWord,one);
-        }             
-    }
-  }
+	@Override
+	public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
+		String fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
+		String line = lineText.toString();
+		if (!caseSensitive) {
+			line = line.toLowerCase();
+		}
+		String concatWord0 = new String();
+		Text currentWord = new Text();
+		Text concatWord = new Text();
+		for (String word : WORD_BOUNDARY.split(line)) {
+
+			if (word.isEmpty() || patternsToSkip.contains(word)) {
+				continue;
+			} else {
+				currentWord = new Text(word);
+//				if (word.equals("title"))
+//				{
+//		
+//					{
+//					titles.addElement(new Text(line));
+//		
+//				
+//					}
+//				}
+			
+				concatWord0 = ( fileName+" : " +(word));
+    			concatWord = new Text(concatWord0);
+				context.write(concatWord, one);
+
+			}
+		}
+	}
+}
+
 
   public static class Reduce extends Reducer<Text, IntWritable, Text, IntWritable> {
     @Override
